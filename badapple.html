@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		* {margin: 0;padding: 0;}
+		body {font-size: 12px;  font-family: simsun; background: #fff;}
+
+		video{
+			width:40%;
+		}
+		
+		p { height: 12px;}
+		#state{
+			  
+		}
+	</style>
+</head>
+<body>
+<div id="state"></div>
+	<video id="video" controls src="./badapple.mp4"></video>
+	<div id="vin">
+		<canvas id="vc"></canvas>
+	</div>
+	
+	<script>
+		//卡
+		// video.addEventListener('timeupdate',function(){
+		// 	vc.getContext("2d").drawImage(video, 0, 0); 
+		// },false);
+		
+		vc2d = vc.getContext("2d");
+
+		setInterval(function(){
+			vc2d.drawImage(video, 0, 0);
+			//从canvas里面获取到数据
+			var imgData = vc2d.getImageData(0, 0, vc.width, vc.height);
+			var imgDataArr = imgData.data;
+			var imgDataWidth = imgData.width;
+			var imgDataHeight = imgData.height;
+			var html = '';
+			for (h = 0; h < imgDataHeight; h += 10) {
+			    var p = '<p>';
+			    for (w = 0; w < imgDataWidth; w += 5) {
+			        var index = (w + imgDataWidth * h) * 4;
+			        var r = imgDataArr[index + 0];
+			        var g = imgDataArr[index + 1];
+			        var b = imgDataArr[index + 2];
+			        var a = imgDataArr[index + 3];
+			        p += "<span style=\"color:rgba("+r+","+g+","+b+","+a+");\">*</span>";
+			    }
+			    p += '</p>';
+			    html += p;
+			}
+			state.innerHTML = html;
+		},1000/60);
+
+		setTimeout(function(){
+			vc.width = video.offsetWidth;
+			vc.height = video.offsetHeight;
+			//原来视频是1280*960
+			//缩放比例
+			var scale = video.offsetWidth/1280;
+			vc2d.scale(scale,scale); 
+		},1000);
+
+		 	</script>
+</body>
+</html>
